@@ -1,0 +1,53 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "screenshots": "node ./scripts/screenshot-pages.mjs",
+    "upload-server": "node ./scripts/upload-server.mjs"
+  },
+  "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.1",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@supabase/supabase-js": "^2.54.0",
+    "expo": "~53.0.20",
+    "expo-auth-session": "^6.2.1",
+    "expo-blur": "^14.1.5",
+    "expo-file-system": "^18.1.11",
+    "expo-font": "^13.3.2",
+    "expo-haptics": "^14.1.4",
+    "expo-linear-gradient": "^14.1.5",
+    "expo-local-authentication": "^16.0.5",
+    "expo-notifications": "^0.31.4",
+    "expo-router": "~5.1.4",
+    "expo-secure-store": "^14.2.3",
+    "expo-sharing": "^13.1.5",
+    "expo-status-bar": "~2.2.3",
+    "jszip": "^3.10.1",
+    "nativewind": "^4.1.23",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-confetti-cannon": "^1.5.2",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-svg": "15.11.2",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-view-shot": "^4.0.3",
+    "react-native-web": "^0.20.0",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@playwright/test": "^1.54.2",
+    "@types/react": "~19.0.10",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "react-native-worklets": "^0.4.1",
+    "typescript": "~5.8.3"
+  },
+  "private": true
+}
