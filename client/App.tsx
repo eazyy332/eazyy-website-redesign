@@ -23,7 +23,6 @@ const Help = lazy(() => import("./pages/Help"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const OrderStart = lazy(() => import("./pages/OrderStart"));
-const OrderServices = lazy(() => import("./pages/OrderServices"));
 const ItemSelection = lazy(() => import("./pages/ItemSelection"));
 const OrderScheduling = lazy(() => import("./pages/OrderScheduling"));
 const OrderAddress = lazy(() => import("./pages/OrderAddress"));
@@ -80,7 +79,6 @@ const App = () => (
 
                 {/* Order Flow Routes */}
                 <Route path="/order/start" element={<OrderStart />} />
-                <Route path="/order/services" element={<OrderServices />} />
                 <Route path="/order/items/:category" element={<ItemSelection />} />
                 <Route path="/order/scheduling" element={<OrderScheduling />} />
                 <Route path="/order/address" element={<OrderAddress />} />
