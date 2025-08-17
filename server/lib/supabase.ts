@@ -10,7 +10,7 @@ const supabaseUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL) 
   | undefined;
 const supabaseServiceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_service_role_key_for_development') as string;
 
-let supabaseAdmin;
+let supabaseAdmin: any;
 
 if (!supabaseUrl) {
   throw new Error("SUPABASE_URL (or VITE_SUPABASE_URL) is required in env");
