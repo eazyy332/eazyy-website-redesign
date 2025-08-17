@@ -1,7 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose, DrawerTrigger } from "@/components/ui/drawer";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
+// Service banner backgrounds and icons from assets
+import heroEazzy from "../../images_devlopment/eazyy-bag-service-banner-background.png";
+import heroDry from "../../images_devlopment/dry-clean-service-banner-background.png";
+import heroWash from "../../images_devlopment/wash-and-iron-serivce-banner-background.png";
+import heroRepair from "../../images_devlopment/repair-service-banner-background.png";
+
+// Item imagery used in the grid
+import tshirtIcon from "../../images_devlopment/32e5a8a6-1220-49e7-aa82-3734440a5043.png";
+import poloIcon from "../../images_devlopment/d65570c9-c43d-49e8-a750-31de4ade14a5.png";
+import henleyIcon from "../../images_devlopment/958ab653-5129-45c7-a1a9-0b216c2cac0c.png";
+import teeGraphicIcon from "../../images_devlopment/f000823d-5a30-4ba8-8d76-30dde432ce90.png";
+import foldedBagIcon from "../../images_devlopment/d5eb7a60-2415-444e-9926-a21b54dfbea1.png";
+import altIcon from "../../images_devlopment/a9264dd0-4fa0-43eb-a418-143762649914.png";
+
+// Service selector icons
+import iconBag from "../../images_devlopment/eazyy-bag-service-icon.png";
+import iconWashIron from "../../images_devlopment/wash-andiron-service.png";
+import iconDry from "../../images_devlopment/dry-clean-service-icon.png";
+import iconRepair from "../../images_devlopment/repair-service-icon.png";
 
 interface Item {
   id: string;
@@ -95,6 +113,38 @@ export default function ItemSelection() {
   };
 
   const currentService = serviceData[category || ''];
+
+  // Per-service hero meta
+  const serviceMeta: Record<string, { title: string; description: string; hero: string; accent: string; label: string } > = {
+    'eazzy-bag': {
+      title: 'eazyy Bag',
+      description: "Fill a bag. We'll handle the rest. Weight-based washing with pickup & delivery on your schedule.",
+      hero: heroEazzy,
+      accent: '#1D62DB',
+      label: 'Laundry'
+    },
+    'dry-cleaning': {
+      title: 'Dry Cleaning',
+      description: 'Crisp care for delicate garments. Professional solvent cleaning and finishing, picked up and delivered.',
+      hero: heroDry,
+      accent: '#16A34A',
+      label: 'Dry clean'
+    },
+    'wash-iron': {
+      title: 'Wash & Iron',
+      description: 'Washed. Pressed. Delivered. Per-item washing and precise ironing, picked up and delivered on your schedule.',
+      hero: heroWash,
+      accent: '#DC2626',
+      label: 'Wash & iron'
+    },
+    'repairs': {
+      title: 'Repairs',
+      description: "Fix, tailor, and extend your garment’s life. From hemming to zippers—skilled repairs with pickup & delivery.",
+      hero: heroRepair,
+      accent: '#F59E0B',
+      label: 'Repairs'
+    }
+  };
   
   useEffect(() => {
     // Load cart from localStorage
@@ -103,6 +153,11 @@ export default function ItemSelection() {
       setCart(JSON.parse(savedCart));
     }
   }, []);
+
+  // Reset subcategory when switching services so grids don't appear empty
+  useEffect(() => {
+    setSelectedSubcategory('all');
+  }, [category]);
 
   useEffect(() => {
     // Save cart to localStorage
@@ -192,309 +247,162 @@ export default function ItemSelection() {
     navigate('/order/start');
   };
 
+  const meta = serviceMeta[category || 'eazzy-bag'];
+  const formatEuro = (value: number) => value.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const getItemImage = (item: Item) => {
+    const key = (item.name || '').toLowerCase();
+    if (key.includes('polo')) return poloIcon;
+    if (key.includes('henley')) return henleyIcon;
+    if (key.includes('bag')) return foldedBagIcon;
+    if (key.includes('t-shirt') || key.includes('tee') || key.includes('shirt')) return tshirtIcon;
+    return teeGraphicIcon;
+  };
+
+  // Category pill icon mapping per service
+  const getSubcategoryIcon = (subcat: string): string => {
+    const s = (subcat || '').toLowerCase();
+    switch (category) {
+      case 'eazzy-bag':
+        if (s === 'bags' || s === 'all') return foldedBagIcon;
+        if (s === 'specialty') return altIcon;
+        return tshirtIcon;
+      case 'wash-iron':
+        if (s === 'shirts' || s === 'all') return tshirtIcon;
+        if (s === 'pants') return henleyIcon;
+        return poloIcon;
+      case 'dry-cleaning':
+        if (s === 'suits') return poloIcon;
+        if (s === 'dresses') return teeGraphicIcon;
+        if (s === 'outerwear') return henleyIcon;
+        if (s === 'knitwear') return altIcon;
+        return tshirtIcon;
+      case 'repairs':
+        if (s === 'hemming' || s === 'fitting') return altIcon;
+        return poloIcon;
+      default:
+        return tshirtIcon;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="hidden">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-black hover:text-primary transition-colors">Home</Link>
-            <Link to="/services" className="text-black hover:text-primary transition-colors">Services</Link>
-            <Link to="/about" className="text-black hover:text-primary transition-colors">About us</Link>
-            <Link to="/contact" className="text-black hover:text-primary transition-colors">Contact</Link>
-          </div>
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <img 
-              src="https://cdn.builder.io/api/v1/image/assets%2F0ba0452a2d1340e7b84136d8ed253a1b%2Fb6e642e462f04f14827396626baf4d5e?format=webp&width=800" 
-              alt="eazyy logo" 
-              className="h-8 w-auto"
-            />
-          </div>
-          <div className="flex items-center space-x-6">
-            <Link to="/help" className="text-black hover:text-primary transition-colors">Help</Link>
-            <div className="text-black">EN</div>
-            {/* Cart indicator */}
-            {getTotalItems() > 0 && (
-              <div className="relative">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 1.5M7 13l1.5 1.5M13 21a2 2 0 100-4 2 2 0 000 4zM5 21a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
-                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {getTotalItems()}
-                </span>
+      <main className="px-4 md:px-8 lg:px-12 pt-8 pb-12">
+        <div className="max-w-[1200px] mx-auto">
+          {/* Hero banner */}
+          <section className="relative rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(17,24,39,0.15)]">
+            <img src={meta.hero} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="relative z-10 px-6 md:px-10 py-10 md:py-14">
+              <div className="inline-flex items-center h-8 px-3 rounded-full text-white/90" style={{ backgroundColor: meta.accent }}>
+                <span className="text-[13px] font-medium">6 services</span>
               </div>
-            )}
-          </div>
-        </nav>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 lg:px-16 pt-12 pb-36 md:pb-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Breadcrumb */}
-          <div className="mb-6">
-            <nav className="flex items-center space-x-2 text-sm text-gray-600">
-              <Link to="/order/start" className="hover:text-primary">Service Categories</Link>
-              <span>›</span>
-              <span className="text-black font-medium">{currentService.name}</span>
-            </nav>
-          </div>
-
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="text-4xl mb-4">{currentService.icon}</div>
-            <h1 className="text-4xl lg:text-5xl font-medium text-black mb-4 leading-tight">
-              {currentService.name}
-            </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
-              {currentService.description}
-            </p>
-          </div>
-
-          {/* Subcategory Filter */}
-          {currentService.subcategories.length > 2 && (
-            <div className="mb-8">
-              <div className="md:flex md:justify-center -mx-4 px-4">
-                <div className="bg-gray-100 rounded-full p-1 inline-flex gap-1 overflow-x-auto no-scrollbar w-full md:w-auto whitespace-nowrap">
-                  {currentService.subcategories.map((subcat: string) => (
-                    <button
-                      key={subcat}
-                      onClick={() => setSelectedSubcategory(subcat)}
-                      className={`px-5 md:px-6 py-2 rounded-full text-sm font-medium transition-colors select-none ${
-                        selectedSubcategory === subcat
-                          ? 'bg-primary text-white'
-                          : 'text-gray-600 hover:text-black'
-                      }`}
-                      style={{ WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      {subcat === 'all' ? 'All Items' : subcat.charAt(0).toUpperCase() + subcat.slice(1)}
-                    </button>
-                  ))}
-                </div>
+              <h1 className="mt-5 text-4xl md:text-5xl font-medium text-white">{meta.title}</h1>
+              <p className="mt-3 max-w-2xl text-white/90 text-lg leading-relaxed">{meta.description}</p>
+              <div className="hidden md:flex items-center gap-5 absolute bottom-6 right-8">
+                {[
+                  { key: 'eazzy-bag', src: iconBag, alt: 'eazyy bag' },
+                  { key: 'dry-cleaning', src: iconDry, alt: 'dry cleaning' },
+                  { key: 'wash-iron', src: iconWashIron, alt: 'wash & iron' },
+                  { key: 'repairs', src: iconRepair, alt: 'repairs' },
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => navigate(`/order/items/${item.key}`)}
+                    className="w-14 h-14 rounded-full bg-white/95 backdrop-blur flex items-center justify-center shadow border"
+                    style={{ borderColor: `${meta.accent}30` }}
+                    aria-label={item.alt}
+                  >
+                    <img src={item.src} alt="" className="w-8 h-8 object-contain" />
+                  </button>
+                ))}
               </div>
             </div>
-          )}
+          </section>
 
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Items Grid */}
-            <div className="lg:col-span-3">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredItems.map((item: Item) => {
-                  const quantityInCart = getItemQuantityInCart(item.id);
-                  return (
-                    <div key={item.id} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                      <div className="mb-4">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="text-2xl">{item.icon}</div>
-                          <h3 className="text-lg font-medium text-black">{item.name}</h3>
-                        </div>
-                        <p className="text-gray-600 text-sm mb-3">{item.description}</p>
-                        <div className="text-xl font-bold text-primary">€{item.price.toFixed(2)}</div>
-                      </div>
+          {/* Subcategory pills */}
+          <div className="mt-6 flex gap-3 overflow-x-auto no-scrollbar">
+            {currentService.subcategories.map((subcat: string) => (
+              <button
+                key={subcat}
+                onClick={() => setSelectedSubcategory(subcat)}
+                className={`inline-flex items-center gap-2 h-10 px-4 rounded-[10px] border text-sm ${selectedSubcategory === subcat ? 'text-white' : 'text-black'} transition-colors`}
+                style={{
+                  backgroundColor: selectedSubcategory === subcat ? meta.accent : '#fff',
+                  borderColor: selectedSubcategory === subcat ? meta.accent : '#E5E7EB'
+                }}
+              >
+                <img src={getSubcategoryIcon(subcat)} alt="" className={`w-5 h-5 object-contain rounded ${selectedSubcategory === subcat ? 'bg-white' : 'bg-transparent'}`} />
+                {subcat === 'all' ? 'Tops' : subcat.charAt(0).toUpperCase() + subcat.slice(1)}
+              </button>
+            ))}
+          </div>
 
-                      {quantityInCart === 0 ? (
-                        <button 
-                          onClick={() => addToCart(item)}
-                          className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                        >
-                          Add to Cart
-                        </button>
-                      ) : (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-center space-x-3">
-                            <button 
-                              onClick={() => updateQuantity(item.id, quantityInCart - 1)}
-                              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                              </svg>
-                            </button>
-                            <span className="w-12 text-center font-medium">{quantityInCart}</span>
-                            <button 
-                              onClick={() => updateQuantity(item.id, quantityInCart + 1)}
-                              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
-                              </svg>
-                            </button>
-                          </div>
-                          <div className="text-center text-sm text-gray-600">
-                            Subtotal: €{(item.price * quantityInCart).toFixed(2)}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Cart Sidebar (desktop only) */}
-            <div className="hidden lg:block lg:col-span-1">
-              <div className="bg-gray-50 rounded-2xl p-6 sticky top-8">
-                <h3 className="text-lg font-medium text-black mb-4">Your Cart</h3>
-                
-                {cart.length === 0 ? (
-                  <div className="text-center py-8">
-                    <svg className="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 1.5M7 13l1.5 1.5M13 21a2 2 0 100-4 2 2 0 000 4zM5 21a2 2 0 100-4 2 2 0 000 4z" />
-                    </svg>
-                    <p className="text-gray-500">No items in cart</p>
+          {/* Items grid */}
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10">
+            {filteredItems.map((item: Item) => {
+              const quantityInCart = getItemQuantityInCart(item.id);
+              const accent = meta.accent;
+              return (
+                <div key={item.id} className="group">
+                  <img src={getItemImage(item)} alt="" className="w-36 h-36 md:w-40 md:h-40 object-contain mx-auto" />
+                  <div className="mt-2 text-[13px] text-black">{item.name}</div>
+                  <div className="flex items-baseline gap-1 text-[11px] text-gray-600">
+                    <span className="align-super">€</span>
+                    <span className="text-[15px] font-semibold text-black">{formatEuro(item.price)}</span>
+                    <span className="ml-1">per piece</span>
                   </div>
-                ) : (
-                  <>
-                    <div className="space-y-3 mb-6">
-                      {cart.map((item) => (
-                        <div key={`${item.serviceCategory}-${item.id}`} className="flex justify-between text-sm">
-                          <div className="flex-1">
-                            <div className="font-medium text-black">{item.name}</div>
-                            <div className="text-gray-600 text-xs">{item.serviceCategory}</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-medium">×{item.quantity}</div>
-                            <div className="text-primary">€{(item.price * item.quantity).toFixed(2)}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="border-t border-gray-200 pt-4 mb-6">
-                      <div className="flex justify-between">
-                        <span className="font-medium text-black">Total</span>
-                        <span className="font-bold text-primary text-lg">€{getTotalPrice().toFixed(2)}</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <button 
-                        onClick={proceedToCheckout}
-                        className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                      >
-                        Continue to Scheduling
-                      </button>
-                      <button 
-                        onClick={continueShopping}
-                        className="w-full border border-gray-300 text-black py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                      >
-                        Add More Services
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
+                  <div className="text-[11px] mt-1" style={{ color: accent }}>{meta.label}</div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <button
+                      onClick={() => updateQuantity(item.id, Math.max(0, quantityInCart - 1))}
+                      className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-sm disabled:opacity-50"
+                      disabled={quantityInCart === 0}
+                      aria-label="Decrease"
+                    >
+                      –
+                    </button>
+                    <span className="text-sm w-4 text-center">{quantityInCart}</span>
+                    <button
+                      onClick={() => (quantityInCart === 0 ? addToCart(item) : updateQuantity(item.id, quantityInCart + 1))}
+                      className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-sm"
+                      aria-label="Increase"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </main>
 
-      {/* Floating Cart (mobile only) - expandable drawer */}
+      {/* Sticky order actions */}
       {cart.length > 0 && (
-        <Drawer open={cartOpen} onOpenChange={setCartOpen}>
-          <DrawerTrigger asChild>
-            <button
-              className="fixed inset-x-0 z-50 md:hidden"
-              style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 72px)" }}
-              aria-label="Open cart"
-            >
-              <div className="mx-4 rounded-2xl border border-gray-200 bg-white shadow-xl p-3 flex items-center justify-between active:bg-gray-50">
-                <div>
-                  <div className="text-xs text-gray-600">{getTotalItems()} items</div>
-                  <div className="text-lg font-semibold text-black">€{getTotalPrice().toFixed(2)}</div>
-                </div>
-                <span className="rounded-full bg-primary text-white px-4 py-2 text-sm font-medium">View cart</span>
+        <div className="fixed inset-x-0 z-50" style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}>
+          <div className="mx-auto max-w-[1200px] px-4 md:px-8 lg:px-12">
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-xl p-3 flex items-center justify-between">
+              <div>
+                <div className="text-xs text-gray-600">{getTotalItems()} items</div>
+                <div className="text-lg font-semibold text-black">€{getTotalPrice().toFixed(2)}</div>
               </div>
-            </button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader className="text-left">
-              <DrawerTitle>Your Cart</DrawerTitle>
-              <DrawerDescription>Review items before continuing</DrawerDescription>
-            </DrawerHeader>
-            <div className="px-4 pb-2 max-h-96 overflow-y-auto">
-              <div className="space-y-3">
-                {cart.map((item) => (
-                  <div key={`${item.serviceCategory}-${item.id}`} className="flex items-center justify-between rounded-2xl border border-gray-200 p-3">
-                    <div className="flex items-center gap-3 flex-1 pr-3">
-                      <div className="text-2xl">{(item as any).icon ?? '🧺'}</div>
-                      <div>
-                        <div className="font-medium text-black text-sm">{item.name}</div>
-                        <div className="text-xs text-gray-600">{item.serviceCategory}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center active:bg-gray-100"
-                        aria-label="Decrease quantity"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
-                      </button>
-                      <span className="w-8 text-center text-sm">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center active:bg-gray-100"
-                        aria-label="Increase quantity"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" /></svg>
-                      </button>
-                    </div>
-                    <div className="text-right w-20 text-sm font-semibold text-primary">€{(item.price * item.quantity).toFixed(2)}</div>
-                  </div>
-                ))}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => navigate('/cart')}
+                  className="rounded-full border border-gray-300 px-5 py-2.5 font-medium text-sm"
+                >
+                  View cart
+                </button>
+                <button
+                  onClick={proceedToCheckout}
+                  className="rounded-full bg-primary text-white px-5 py-2.5 font-semibold text-sm"
+                >
+                  Continue
+                </button>
               </div>
             </div>
-            <DrawerFooter>
-              <div className="flex items-center justify-between px-1">
-                <span className="text-sm text-gray-600">Total</span>
-                <span className="text-lg font-semibold text-black">€{getTotalPrice().toFixed(2)}</span>
-              </div>
-              <button
-                onClick={() => setPromptOpen(true)}
-                className="w-full rounded-full bg-primary text-white px-5 py-3 font-medium"
-              >
-                Continue
-              </button>
-              <DrawerClose asChild>
-                <button className="w-full rounded-full border border-gray-300 px-5 py-3 font-medium">Close</button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      )}
-
-      {/* Add other services prompt */}
-      <AlertDialog open={promptOpen} onOpenChange={setPromptOpen}>
-        <AlertDialogContent className="rounded-2xl">
-          <AlertDialogHeader className="text-center">
-            <div className="mx-auto mb-2 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-xl">➕</span>
-            </div>
-            <AlertDialogTitle className="text-lg">Add other services?</AlertDialogTitle>
-            <AlertDialogDescription>
-              You can continue to scheduling now, or add items from other services first.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => { setPromptOpen(false); proceedToCheckout(); }}
-              className="w-full rounded-full bg-primary text-white px-5 py-3 font-semibold"
-            >
-              Continue to Scheduling
-            </button>
-            <button
-              onClick={() => { setPromptOpen(false); navigate('/order/start'); }}
-              className="w-full rounded-full border border-gray-300 bg-white text-black px-5 py-3 font-medium"
-            >
-              Add Services
-            </button>
-            <AlertDialogCancel asChild>
-              <button className="w-full rounded-full bg-gray-100 text-black px-5 py-3 font-medium">Cancel</button>
-            </AlertDialogCancel>
           </div>
-        </AlertDialogContent>
-      </AlertDialog>
+        </div>
+      )}
     </div>
   );
 }
