@@ -40,14 +40,12 @@ export async function createOrder(req: Request, res: Response) {
       schedule,
       address,
       paymentMethod,
-      contact,
     }: {
       selectedServices: OrderItemInput[];
       totalPrice: number;
       schedule?: any;
       address?: any;
       paymentMethod?: { id: string; name: string } | null;
-      contact?: { firstName?: string; lastName?: string; email?: string; phone?: string };
     } = req.body ?? {};
 
     if (!Array.isArray(selectedServices) || selectedServices.length === 0) {
@@ -65,10 +63,10 @@ export async function createOrder(req: Request, res: Response) {
         address,
         payment_method: paymentMethod?.id ?? null,
         payment_method_label: paymentMethod?.name ?? null,
-        contact_first_name: contact?.firstName ?? null,
-        contact_last_name: contact?.lastName ?? null,
-        contact_email: contact?.email ?? null,
-        contact_phone: contact?.phone ?? null,
+        contact_first_name: user.user_metadata?.first_name ?? null,
+        contact_last_name: user.user_metadata?.last_name ?? null,
+        contact_email: user.email ?? null,
+        contact_phone: user.user_metadata?.phone ?? null,
       })
       .select("id")
       .single();

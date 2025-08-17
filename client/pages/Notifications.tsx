@@ -1,97 +1,89 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
-interface Notification {
-  id: string;
-  type: "discrepancy" | "quote" | "order_update" | "promotional";
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-  actionUrl?: string;
-  actionText?: string;
-  priority: "high" | "medium" | "low";
-  relatedOrderId?: string;
-}
+import { useOrders } from "@/hooks/useOrders";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Notifications() {
+  const { user } = useAuth();
+  const { orders, loading } = useOrders();
   const [selectedFilter, setSelectedFilter] = useState("all");
 
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "notif-1",
-      type: "discrepancy",
-      title: "Extra Items Found in Order",
-      message:
-        "We found 2 additional items in your order EZY-001234. Please review and approve or decline these items.",
-      timestamp: "2024-01-22T10:30:00Z",
-      isRead: false,
-      actionUrl: "/discrepancy/123",
-      actionText: "Review Items",
-      priority: "high",
-      relatedOrderId: "EZY-001234",
-    },
-    {
-      id: "notif-2",
-      type: "quote",
-      title: "Custom Quote Ready",
-      message:
-        "Your custom quote for the vintage silk evening gown is ready for review. Price: €89.99",
-      timestamp: "2024-01-21T14:15:00Z",
-      isRead: false,
-      actionUrl: "/quote-approval/456",
-      actionText: "Review Quote",
-      priority: "high",
-      relatedOrderId: "QT-001234",
-    },
-    {
-      id: "notif-3",
-      type: "order_update",
-      title: "Order Ready for Delivery",
-      message:
-        "Your order EZY-001232 has been completed and is ready for delivery.",
-      timestamp: "2024-01-20T16:45:00Z",
-      isRead: true,
-      actionUrl: "/orders",
-      actionText: "View Order",
-      priority: "medium",
-      relatedOrderId: "EZY-001232",
-    },
-    {
-      id: "notif-4",
-      type: "order_update",
-      title: "Pickup Completed",
-      message:
-        "We have successfully picked up your items for order EZY-001233.",
-      timestamp: "2024-01-19T09:20:00Z",
-      isRead: true,
-      priority: "low",
-      relatedOrderId: "EZY-001233",
-    },
-    {
-      id: "notif-5",
-      type: "promotional",
-      title: "Special Offer: 20% Off Dry Cleaning",
-      message:
-        "Get 20% off your next dry cleaning order. Valid until the end of the month.",
-      timestamp: "2024-01-18T12:00:00Z",
-      isRead: true,
-      priority: "low",
-    },
-  ]);
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-medium text-black mb-4">Please sign in</h1>
+          <p className="text-gray-600 mb-6">You need to be signed in to view notifications.</p>
+          <Link to="/auth/login" className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-colors">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Generate notifications from orders
+  const notifications = orders.map(order => ({
+    id: `order-${order.id}`,
+    type: "order_update" as const,
+    title: getNotificationTitle(order.status),
+    message: getNotificationMessage(order.status, order.id.slice(0, 8)),
+    timestamp: order.created_at,
+    isRead: order.status === "delivered",
+    actionUrl: `/order/${order.id}`,
+    actionText: "View Order",
+    priority: getPriority(order.status),
+    relatedOrderId: order.id.slice(0, 8),
+  }));
+
+  function getNotificationTitle(status: string) {
+    switch (status) {
+      case "confirmed": return "Order Confirmed";
+      case "pickup_scheduled": return "Pickup Scheduled";
+      case "picked_up": return "Items Picked Up";
+      case "in_processing": return "Order in Processing";
+      case "ready_for_delivery": return "Ready for Delivery";
+      case "out_for_delivery": return "Out for Delivery";
+      case "delivered": return "Order Delivered";
+      default: return "Order Update";
+    }
+  }
+
+  function getNotificationMessage(status: string, orderId: string) {
+    switch (status) {
+      case "confirmed": return `Your order ${orderId} has been confirmed and is being prepared.`;
+      case "pickup_scheduled": return `Pickup has been scheduled for order ${orderId}.`;
+      case "picked_up": return `We have successfully picked up your items for order ${orderId}.`;
+      case "in_processing": return `Your order ${orderId} is being cleaned by our experts.`;
+      case "ready_for_delivery": return `Your order ${orderId} has been completed and is ready for delivery.`;
+      case "out_for_delivery": return `Your order ${orderId} is on its way to you.`;
+      case "delivered": return `Your order ${orderId} has been delivered successfully.`;
+      default: return `Update for order ${orderId}.`;
+    }
+  }
+
+  function getPriority(status: string): "high" | "medium" | "low" {
+    switch (status) {
+      case "ready_for_delivery":
+      case "out_for_delivery":
+        return "high";
+      case "confirmed":
+      case "pickup_scheduled":
+      case "in_processing":
+        return "medium";
+      default:
+        return "low";
+    }
+  }
 
   const markAsRead = (notificationId: string) => {
-    setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === notificationId ? { ...notif, isRead: true } : notif,
-      ),
-    );
+    // In a real app, this would update the read status in the database
+    console.log("Mark as read:", notificationId);
   };
 
   const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notif) => ({ ...notif, isRead: true })),
-    );
+    // In a real app, this would update all notifications as read
+    console.log("Mark all as read");
   };
 
   const getNotificationIcon = (type: string, priority: string) => {
@@ -211,6 +203,29 @@ export default function Notifications() {
       : selectedFilter === "unread"
         ? notifications.filter((notif) => !notif.isRead)
         : notifications.filter((notif) => notif.type === selectedFilter);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <main className="px-4 lg:px-16 py-8">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl lg:text-4xl font-medium text-black mb-2">
+              Notifications
+            </h1>
+            <p className="text-gray-600 mb-8">Loading notifications...</p>
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white border rounded-xl p-6 animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded w-1/3 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const unreadCount = notifications.filter((notif) => !notif.isRead).length;
 

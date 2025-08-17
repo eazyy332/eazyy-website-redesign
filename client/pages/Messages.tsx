@@ -1,35 +1,7 @@
-import { useEffect, useState } from "react";
-
-type Message = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string | null;
-  subject: string;
-  message: string;
-  created_at: string;
-};
+import { useMessages } from "@/hooks/useMessages";
 
 export default function Messages() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/messages");
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Failed to load");
-        setMessages(data.data as Message[]);
-      } catch (e: any) {
-        setError(e?.message ?? "Failed to load messages");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const { messages, loading, error } = useMessages();
 
   if (loading) return <div className="p-8">Loading…</div>;
   if (error) return <div className="p-8 text-red-600">{error}</div>;

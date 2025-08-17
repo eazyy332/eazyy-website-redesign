@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useOrders } from "@/hooks/useOrders";
+import { useAuth } from "@/hooks/useAuth";
 
 type OrderStatus =
   | "confirmed"
@@ -11,114 +13,25 @@ type OrderStatus =
   | "delivered"
   | "cancelled";
 
-interface Order {
-  id: string;
-  date: string;
-  status: OrderStatus;
-  services: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-  }>;
-  total: number;
-  pickupDate?: string;
-  deliveryDate?: string;
-  address: string;
-  type: "standard" | "custom";
-}
-
 export default function OrderHistory() {
+  const { user } = useAuth();
+  const { orders, loading, error } = useOrders();
   const [filterStatus, setFilterStatus] = useState<"all" | OrderStatus>("all");
   const [sortBy, setSortBy] = useState<"date" | "status" | "total">("date");
 
-  // Mock order data
-  const orders: Order[] = [
-    {
-      id: "EZ123456",
-      date: "2024-01-15",
-      status: "delivered",
-      services: [
-        { name: "eazzy Bag", quantity: 2, price: 24.99 },
-        { name: "Dry Cleaning", quantity: 1, price: 12.99 },
-      ],
-      total: 62.97,
-      pickupDate: "2024-01-16",
-      deliveryDate: "2024-01-18",
-      address: "123 Main Street, Apt 4B, Amsterdam",
-      type: "standard",
-    },
-    {
-      id: "EZ123457",
-      date: "2024-01-10",
-      status: "delivered",
-      services: [{ name: "Wash & Iron", quantity: 5, price: 3.99 }],
-      total: 19.95,
-      pickupDate: "2024-01-11",
-      deliveryDate: "2024-01-13",
-      address: "456 Business Ave, Floor 3, Amsterdam",
-      type: "standard",
-    },
-    {
-      id: "QT789012",
-      date: "2024-01-08",
-      status: "delivered",
-      services: [
-        { name: "Custom Quote - Silk Dress", quantity: 1, price: 45.0 },
-      ],
-      total: 45.0,
-      pickupDate: "2024-01-09",
-      deliveryDate: "2024-01-12",
-      address: "123 Main Street, Apt 4B, Amsterdam",
-      type: "custom",
-    },
-    {
-      id: "EZ123458",
-      date: "2024-01-20",
-      status: "out_for_delivery",
-      services: [
-        { name: "eazzy Bag", quantity: 1, price: 24.99 },
-        { name: "Repairs & Alterations", quantity: 2, price: 15.0 },
-      ],
-      total: 54.99,
-      pickupDate: "2024-01-21",
-      deliveryDate: "2024-01-23",
-      address: "123 Main Street, Apt 4B, Amsterdam",
-      type: "standard",
-    },
-    {
-      id: "EZ123459",
-      date: "2024-01-22",
-      status: "in_processing",
-      services: [{ name: "Dry Cleaning", quantity: 3, price: 12.99 }],
-      total: 38.97,
-      pickupDate: "2024-01-23",
-      deliveryDate: "2024-01-25",
-      address: "456 Business Ave, Floor 3, Amsterdam",
-      type: "standard",
-    },
-    {
-      id: "EZ123234",
-      date: "2024-01-22",
-      status: "pickup_scheduled",
-      services: [{ name: "eazzy Bag", quantity: 1, price: 24.99 }],
-      total: 24.99,
-      pickupDate: "2024-01-23",
-      deliveryDate: "2024-01-25",
-      address: "789 Oak Street, Unit 12, Amsterdam",
-      type: "standard",
-    },
-    {
-      id: "QT456789",
-      date: "2024-01-21",
-      status: "confirmed",
-      services: [
-        { name: "Custom Quote - Pending Review", quantity: 1, price: 0 },
-      ],
-      total: 0,
-      address: "123 Main Street, Apt 4B, Amsterdam",
-      type: "custom",
-    },
-  ];
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-medium text-black mb-4">Please sign in</h1>
+          <p className="text-gray-600 mb-6">You need to be signed in to view your orders.</p>
+          <Link to="/auth/login" className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-colors">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
@@ -141,22 +54,22 @@ export default function OrderHistory() {
     }
   };
 
-  const getStatusLabel = (status: OrderStatus) => {
+  const getStatusLabel = (status: string) => {
     switch (status) {
-      case "delivered":
-        return "Delivered";
-      case "out_for_delivery":
-        return "Out for Delivery";
+      case "confirmed":
+        return "Confirmed";
+      case "pickup_scheduled":
+        return "Pickup Scheduled";
+      case "picked_up":
+        return "Picked Up";
       case "in_processing":
         return "In Processing";
       case "ready_for_delivery":
         return "Ready for Delivery";
-      case "picked_up":
-        return "Picked Up";
-      case "pickup_scheduled":
-        return "Pickup Scheduled";
-      case "confirmed":
-        return "Confirmed";
+      case "out_for_delivery":
+        return "Out for Delivery";
+      case "delivered":
+        return "Delivered";
       case "cancelled":
         return "Cancelled";
       default:
@@ -164,16 +77,86 @@ export default function OrderHistory() {
     }
   };
 
+  const formatAddress = (address: any) => {
+    if (!address) return "No address provided";
+    if (typeof address === 'string') return address;
+    
+    return `${address.streetAddress || address.address || ''}${
+      address.apartment ? `, ${address.apartment}` : ''
+    }, ${address.city || ''}, ${address.postalCode || address.zipCode || ''}`;
+  };
+
+  const getOrderServices = (order: any) => {
+    if (!order.order_items || order.order_items.length === 0) {
+      return [{ name: "No items", quantity: 0, price: 0 }];
+    }
+    
+    return order.order_items.map((item: any) => ({
+      name: item.name,
+      quantity: item.quantity,
+      price: item.unit_price
+    }));
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <main className="px-4 lg:px-16 py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-4xl lg:text-5xl font-medium text-black mb-4 leading-tight">
+                Order History
+              </h1>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Loading your orders...
+              </p>
+            </div>
+            <div className="space-y-6">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white rounded-2xl border border-gray-200 p-6 animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white">
+        <main className="px-4 lg:px-16 py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center">
+              <h1 className="text-2xl font-medium text-black mb-4">Error loading orders</h1>
+              <p className="text-gray-600 mb-6">{error}</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   const filteredOrders = orders.filter(
-    (order) => filterStatus === "all" || order.status === filterStatus,
+    (order) => filterStatus === "all" || order.status === filterStatus
   );
 
   const sortedOrders = [...filteredOrders].sort((a, b) => {
     switch (sortBy) {
       case "date":
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       case "total":
-        return b.total - a.total;
+        return b.total_amount - a.total_amount;
       case "status":
         return a.status.localeCompare(b.status);
       default:
@@ -181,7 +164,7 @@ export default function OrderHistory() {
     }
   });
 
-  const reorderService = (order: Order) => {
+  const reorderService = (order: any) => {
     // In a real app, this would populate the order form with the same services
     alert(
       `Reorder functionality coming soon! This would recreate order ${order.id} with the same services.`,
@@ -364,7 +347,7 @@ export default function OrderHistory() {
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-3">
                         <h3 className="text-lg font-medium text-black">
-                          Order #{order.id}
+                          Order #{order.id.slice(0, 8)}
                         </h3>
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
@@ -373,29 +356,13 @@ export default function OrderHistory() {
                         </span>
 
                         {/* Special indicators */}
-                        {order.id === "EZ123234" &&
-                          order.status === "pickup_scheduled" && (
-                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium animate-pulse">
-                              Items Found - Review Needed
-                            </span>
-                          )}
-                        {order.id === "QT456789" && order.type === "custom" && (
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium animate-pulse">
-                            Quote Ready for Review
-                          </span>
-                        )}
-                        {order.type === "custom" && order.id !== "QT456789" && (
-                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                            Custom Quote
-                          </span>
-                        )}
                       </div>
 
                       <div className="grid md:grid-cols-3 gap-4 text-sm">
                         <div>
                           <span className="text-gray-600">Order Date:</span>
                           <div className="font-medium text-black">
-                            {new Date(order.date).toLocaleDateString("en-US", {
+                            {new Date(order.created_at).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "long",
                               day: "numeric",
@@ -403,11 +370,11 @@ export default function OrderHistory() {
                           </div>
                         </div>
 
-                        {order.pickupDate && (
+                        {order.schedule?.pickupDate && (
                           <div>
                             <span className="text-gray-600">Pickup:</span>
                             <div className="font-medium text-black">
-                              {new Date(order.pickupDate).toLocaleDateString(
+                              {new Date(order.schedule.pickupDate).toLocaleDateString(
                                 "en-US",
                                 {
                                   month: "short",
@@ -418,11 +385,11 @@ export default function OrderHistory() {
                           </div>
                         )}
 
-                        {order.deliveryDate && (
+                        {order.schedule?.deliveryDate && (
                           <div>
                             <span className="text-gray-600">Delivery:</span>
                             <div className="font-medium text-black">
-                              {new Date(order.deliveryDate).toLocaleDateString(
+                              {new Date(order.schedule.deliveryDate).toLocaleDateString(
                                 "en-US",
                                 {
                                   month: "short",
@@ -437,13 +404,13 @@ export default function OrderHistory() {
                       <div className="mt-3">
                         <span className="text-gray-600 text-sm">Services:</span>
                         <div className="font-medium text-black">
-                          {order.services.map((service, index) => (
+                          {getOrderServices(order).map((service, index) => (
                             <span key={index}>
                               {service.name}{" "}
                               {service.quantity > 1
                                 ? `(×${service.quantity})`
                                 : ""}
-                              {index < order.services.length - 1 ? ", " : ""}
+                              {index < getOrderServices(order).length - 1 ? ", " : ""}
                             </span>
                           ))}
                         </div>
@@ -454,34 +421,15 @@ export default function OrderHistory() {
                     <div className="flex flex-col items-end gap-3">
                       <div className="text-right">
                         <div className="text-2xl font-bold text-primary">
-                          €{order.total.toFixed(2)}
+                          €{order.total_amount.toFixed(2)}
                         </div>
                         <div className="text-sm text-gray-600">
-                          {order.services.length} item
-                          {order.services.length > 1 ? "s" : ""}
+                          {order.order_items?.length || 0} item
+                          {(order.order_items?.length || 0) > 1 ? "s" : ""}
                         </div>
                       </div>
 
                       <div className="flex gap-2">
-                        {/* Special actions for discrepancy and quotes */}
-                        {order.id === "EZ123234" &&
-                          order.status === "pickup_scheduled" && (
-                            <Link
-                              to={`/discrepancy/${order.id}`}
-                              className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
-                            >
-                              Review Items Found
-                            </Link>
-                          )}
-                        {order.id === "QT456789" && order.type === "custom" && (
-                          <Link
-                            to={`/quote-approval/${order.id}`}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-                          >
-                            Review Quote
-                          </Link>
-                        )}
-
                         <Link
                           to={`/order/${order.id}`}
                           className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-black hover:bg-gray-50 transition-colors"
@@ -514,8 +462,7 @@ export default function OrderHistory() {
             </div>
             <div className="bg-gray-50 rounded-2xl p-6 text-center">
               <div className="text-3xl font-bold text-primary mb-2">
-                €
-                {orders.reduce((sum, order) => sum + order.total, 0).toFixed(2)}
+                €{orders.reduce((sum, order) => sum + order.total_amount, 0).toFixed(2)}
               </div>
               <div className="text-gray-600">Total Spent</div>
             </div>

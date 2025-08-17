@@ -24,16 +24,51 @@ export function createServer() {
   app.post("/api/contact", handleContact);
 
   app.get("/api/messages", async (_req, res) => {
-    const { data, error } = await supabaseAdmin
-      .from("contact_messages")
-      .select("id, first_name, last_name, email, phone, subject, message, created_at")
-      .order("created_at", { ascending: false })
-      .limit(50);
-    if (error) return res.status(500).json({ ok: false, error: error.message });
-    res.json({ ok: true, data });
+    try {
+      const { data, error } = await supabaseAdmin
+        .from("contact_messages")
+        .select("id, first_name, last_name, email, phone, subject, message, created_at")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      
+      if (error) throw error;
+      res.json({ ok: true, data: data || [] });
+    } catch (error: any) {
+      res.status(500).json({ ok: false, error: error.message || "Failed to fetch messages" });
+    }
   });
 
   app.post('/api/orders', createOrder);
+
+  app.get('/api/orders', async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader?.startsWith('Bearer ')) {
+        return res.status(401).json({ ok: false, error: "Authentication required" });
+      }
+      
+      const token = authHeader.substring(7);
+      const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
+      
+      if (userError || !user) {
+        return res.status(401).json({ ok: false, error: "Invalid authentication" });
+      }
+
+      const { data, error } = await supabaseAdmin
+        .from("orders")
+        .select(`
+          *,
+          order_items (*)
+        `)
+        .eq('user_id', user.id)
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      res.json({ ok: true, data: data || [] });
+    } catch (error: any) {
+      res.status(500).json({ ok: false, error: error.message || "Failed to fetch orders" });
+    }
+  });
 
   return app;
 }
