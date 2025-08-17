@@ -31,7 +31,7 @@ export default function SiteHeader() {
 
         {/* Mobile: Hamburger */}
         <div className="md:hidden flex items-center">
-          <MobileMenu />
+          <MobileMenu user={user} handleSignOut={handleSignOut} />
         </div>
 
         {/* Center: Logo */}
@@ -84,7 +84,7 @@ export default function SiteHeader() {
   );
 }
 
-function MobileMenu() {
+function MobileMenu({ user, handleSignOut }: { user: any; handleSignOut: () => void }) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
