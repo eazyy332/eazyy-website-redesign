@@ -2,24 +2,24 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 // Service banner backgrounds and icons from assets
-import heroEazzy from "../../images_devlopment/eazyy-bag-service-banner-background.png";
-import heroDry from "../../images_devlopment/dry-clean-service-banner-background.png";
-import heroWash from "../../images_devlopment/wash-and-iron-serivce-banner-background.png";
-import heroRepair from "../../images_devlopment/repair-service-banner-background.png";
+import heroEazzy from "../assets/images/eazyy-bag-service-banner-background.png";
+import heroDry from "../assets/images/dry-clean-service-banner-background.png";
+import heroWash from "../assets/images/wash-and-iron-serivce-banner-background.png";
+import heroRepair from "../assets/images/repair-service-banner-background.png";
 
 // Item imagery used in the grid
-import tshirtIcon from "../../images_devlopment/32e5a8a6-1220-49e7-aa82-3734440a5043.png";
-import poloIcon from "../../images_devlopment/d65570c9-c43d-49e8-a750-31de4ade14a5.png";
-import henleyIcon from "../../images_devlopment/958ab653-5129-45c7-a1a9-0b216c2cac0c.png";
-import teeGraphicIcon from "../../images_devlopment/f000823d-5a30-4ba8-8d76-30dde432ce90.png";
-import foldedBagIcon from "../../images_devlopment/d5eb7a60-2415-444e-9926-a21b54dfbea1.png";
-import altIcon from "../../images_devlopment/a9264dd0-4fa0-43eb-a418-143762649914.png";
+import tshirtIcon from "../assets/images/32e5a8a6-1220-49e7-aa82-3734440a5043.png";
+import poloIcon from "../assets/images/d65570c9-c43d-49e8-a750-31de4ade14a5.png";
+import henleyIcon from "../assets/images/958ab653-5129-45c7-a1a9-0b216c2cac0c.png";
+import teeGraphicIcon from "../assets/images/f000823d-5a30-4ba8-8d76-30dde432ce90.png";
+import foldedBagIcon from "../assets/images/d5eb7a60-2415-444e-9926-a21b54dfbea1.png";
+import altIcon from "../assets/images/a9264dd0-4fa0-43eb-a418-143762649914.png";
 
 // Service selector icons
-import iconBag from "../../images_devlopment/eazyy-bag-service-icon.png";
-import iconWashIron from "../../images_devlopment/wash-andiron-service.png";
-import iconDry from "../../images_devlopment/dry-clean-service-icon.png";
-import iconRepair from "../../images_devlopment/repair-service-icon.png";
+import iconBag from "../assets/images/eazyy-bag-service-icon.png";
+import iconWashIron from "../assets/images/wash-andiron-service.png";
+import iconDry from "../assets/images/dry-clean-service-icon.png";
+import iconRepair from "../assets/images/repair-service-icon.png";
 
 interface Item {
   id: string;
