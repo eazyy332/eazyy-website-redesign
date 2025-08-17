@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-// Service banner backgrounds and icons from assets
-import heroEazzy from "../assets/images/eazyy-bag-service-banner-background.png";
-import heroDry from "../assets/images/dry-clean-service-banner-background.png";
-import heroWash from "../assets/images/wash-and-iron-serivce-banner-background.png";
-import heroRepair from "../assets/images/repair-service-banner-background.png";
+// Service banner backgrounds and icons - using placeholder images
+const heroEazzy = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=400&fit=crop";
+const heroDry = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=1200&h=400&fit=crop";
+const heroWash = "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=1200&h=400&fit=crop";
+const heroRepair = "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop";
 
-// Item imagery used in the grid
-import tshirtIcon from "../assets/images/32e5a8a6-1220-49e7-aa82-3734440a5043.png";
-import poloIcon from "../assets/images/d65570c9-c43d-49e8-a750-31de4ade14a5.png";
-import henleyIcon from "../assets/images/958ab653-5129-45c7-a1a9-0b216c2cac0c.png";
-import teeGraphicIcon from "../assets/images/f000823d-5a30-4ba8-8d76-30dde432ce90.png";
-import foldedBagIcon from "../assets/images/d5eb7a60-2415-444e-9926-a21b54dfbea1.png";
-import altIcon from "../assets/images/a9264dd0-4fa0-43eb-a418-143762649914.png";
+// Item imagery used in the grid - using placeholder images
+const tshirtIcon = "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop";
+const poloIcon = "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=200&h=200&fit=crop";
+const henleyIcon = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&h=200&fit=crop";
+const teeGraphicIcon = "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&h=200&fit=crop";
+const foldedBagIcon = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop";
+const altIcon = "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=200&h=200&fit=crop";
 
-// Service selector icons
-import iconBag from "../assets/images/eazyy-bag-service-icon.png";
-import iconWashIron from "../assets/images/wash-andiron-service.png";
-import iconDry from "../assets/images/dry-clean-service-icon.png";
-import iconRepair from "../assets/images/repair-service-icon.png";
+// Service selector icons - using placeholder images
+const iconBag = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=64&h=64&fit=crop";
+const iconWashIron = "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=64&h=64&fit=crop";
+const iconDry = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=64&h=64&fit=crop";
+const iconRepair = "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=64&h=64&fit=crop";
 
 interface Item {
   id: string;
