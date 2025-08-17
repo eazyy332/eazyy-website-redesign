@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 // Item icons (same set as item selection)
 const tshirtIcon = "/images_devlopment/32e5a8a6-1220-49e7-aa82-3734440a5043.png";
 const poloIcon = "/images_devlopment/d65570c9-c43d-49e8-a750-31de4ade14a5.png";
@@ -18,6 +19,7 @@ interface CartItem {
 
 export default function Cart() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
 
   useEffect(() => {
@@ -51,12 +53,20 @@ export default function Cart() {
 
   const proceed = () => {
     if (cart.length === 0) return;
-    navigate("/order/scheduling", {
-      state: {
-        selectedServices: cart.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity, serviceCategory: i.serviceCategory })),
-        totalPrice,
-      },
-    });
+    
+    if (!user) {
+      // Redirect to login with current cart preserved
+      navigate("/auth/login", {
+        state: { from: "/order/scheduling" }
+      });
+    } else {
+      navigate("/order/scheduling", {
+        state: {
+          selectedServices: cart.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity, serviceCategory: i.serviceCategory })),
+          totalPrice,
+        },
+      });
+    }
   };
 
   return (
@@ -114,6 +124,11 @@ export default function Cart() {
                   <Link to="/order/start" className="block w-full text-center rounded-full border border-gray-300 px-5 py-3 font-medium">Add more items</Link>
                 </div>
               </div>
+                {!user && (
+                  <p className="text-xs text-gray-500 text-center mb-2">
+                    You'll be asked to sign in before completing your order
+                  </p>
+                )}
             </div>
           )}
         </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Drawer,
   DrawerContent,
@@ -11,6 +12,12 @@ import {
 } from "./ui/drawer";
 
 export default function SiteHeader() {
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <header className="w-full px-4 md:px-8 py-2">
       <nav className="grid grid-cols-3 items-center max-w-7xl mx-auto">
@@ -43,12 +50,34 @@ export default function SiteHeader() {
           <Link to="/help" className="p-1.5 rounded hover:bg-gray-100" title="Help">
             <MenuIcon name="help" />
           </Link>
-          <Link to="/orders" className="p-1.5 rounded hover:bg-gray-100" title="Orders">
-            <MenuIcon name="orders" />
-          </Link>
+          {user ? (
+            <Link to="/orders" className="p-1.5 rounded hover:bg-gray-100" title="Orders">
+              <MenuIcon name="orders" />
+            </Link>
+          ) : null}
           <Link to="/cart" className="p-1.5 rounded hover:bg-gray-100" title="Cart">
             <MenuIcon name="cart" />
           </Link>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-600 hidden lg:block">{user.email}</span>
+              <button
+                onClick={handleSignOut}
+                className="p-1.5 rounded hover:bg-gray-100"
+                title="Sign Out"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth/login" className="p-1.5 rounded hover:bg-gray-100" title="Sign In">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </Link>
+          )}
         </div>
       </nav>
     </header>
@@ -76,16 +105,40 @@ function MobileMenu() {
           <MobileLink to="/services" label="Services" />
           <MobileLink to="/about" label="About" />
           <MobileLink to="/contact" label="Contact" />
-          <MobileLink to="/orders" label="Orders" />
+          {user && <MobileLink to="/orders" label="Orders" />}
           <MobileLink to="/help" label="Help" />
+          {!user ? (
+            <div className="pt-3 space-y-2">
+              <Link
+                to="/auth/login"
+                className="block w-full text-center rounded-full border border-primary text-primary px-5 py-3 font-medium"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/auth/signup"
+                className="block w-full text-center rounded-full bg-primary text-white px-5 py-3 font-medium"
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : (
           <div className="pt-3">
+            <div className="text-xs text-gray-600 mb-2 px-4">{user.email}</div>
             <Link
               to="/order/start"
               className="block w-full text-center rounded-full bg-primary text-white px-5 py-3 font-medium"
             >
               Start Order
             </Link>
+            <button
+              onClick={handleSignOut}
+              className="block w-full text-center rounded-full border border-gray-300 text-gray-700 px-5 py-3 font-medium mt-2"
+            >
+              Sign Out
+            </button>
           </div>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

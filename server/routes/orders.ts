@@ -1,6 +1,23 @@
 import type { Request, Response } from "express";
 import { supabaseAdmin } from "../lib/supabase";
 
+// Helper to get user from Authorization header
+async function getUserFromRequest(req: Request) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return null;
+  }
+  
+  const token = authHeader.substring(7);
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  
+  if (error || !user) {
+    return null;
+  }
+  
+  return user;
+}
+
 type OrderItemInput = {
   id: string; // item id from catalog
   name: string;
@@ -11,6 +28,12 @@ type OrderItemInput = {
 
 export async function createOrder(req: Request, res: Response) {
   try {
+    // Verify user is authenticated
+    const user = await getUserFromRequest(req);
+    if (!user) {
+      return res.status(401).json({ ok: false, error: "Authentication required" });
+    }
+
     const {
       selectedServices,
       totalPrice,
@@ -35,6 +58,7 @@ export async function createOrder(req: Request, res: Response) {
     const { data: order, error: orderErr } = await supabaseAdmin
       .from("orders")
       .insert({
+        user_id: user.id,
         status: "confirmed",
         total_amount: totalPrice ?? 0,
         schedule,

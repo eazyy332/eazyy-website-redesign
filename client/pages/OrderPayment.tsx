@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabase";
 
 interface PaymentMethod {
   id: string;
@@ -19,6 +21,7 @@ interface CardDetails {
 export default function OrderPayment() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { selectedServices, totalPrice, schedule, address } = location.state || { 
     selectedServices: [], 
     totalPrice: 0, 
@@ -128,11 +131,24 @@ export default function OrderPayment() {
   const handlePayment = async () => {
     if (!isFormValid()) return;
 
+    if (!user) {
+      navigate("/auth/login", {
+        state: { from: location.pathname }
+      });
+      return;
+    }
+
     setIsProcessing(true);
     try {
+      // Get user session for authenticated request
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const res = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           selectedServices,
           totalPrice,
