@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 
+// Assets provided by you (stored under public/images_devlopment)
+const aboutBanner = "/images_devlopment/0ab4f20e-60e3-482b-bcec-310d29be8063.png"; // blue gradient banner
+const aboutPhoto = "/images_devlopment/download (6).png"; // eazyy van photo (updated)
+
 export default function About() {
   return (
     <div className="min-h-screen bg-white">
@@ -40,52 +44,47 @@ export default function About() {
       {/* Hero Section */}
       <section className="px-4 lg:px-16 py-12 lg:py-20">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-accent rounded-lg mb-6">
-            <svg className="w-3 h-2 mr-3 fill-primary" viewBox="0 0 8 6" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6.93081 2.5385C6.27144 2.23578 5.37582 2.06384 4.45237 2.02552L4.45051 1.98728C4.44327 1.83309 4.43492 1.79953 4.39205 1.75449C4.31801 1.67652 4.20369 1.62177 3.92068 1.52878C3.78093 1.48277 3.63191 1.42952 3.58978 1.41035C3.46303 1.35286 3.43594 1.24892 3.52947 1.17978C3.54914 1.16521 3.62505 1.13907 3.69816 1.12167C3.92773 1.06701 4.22503 1.08175 4.40078 1.15646C4.51472 1.20486 4.54683 1.24831 4.56446 1.37688C4.57578 1.46007 4.58951 1.49133 4.62143 1.50679C4.77268 1.58 5.45321 1.56869 5.5382 1.49169C5.57105 1.46184 5.54526 1.26464 5.49533 1.16388C5.39586 0.963156 5.07425 0.769229 4.70049 0.68454C4.47204 0.632614 4.30372 0.615571 4.01681 0.615571C3.62467 0.615394 3.32069 0.659107 3.05754 0.753421C2.58282 0.923416 2.34992 1.19258 2.46813 1.43482C2.54867 1.59995 2.74149 1.72111 3.11785 1.84316C3.35985 1.92166 3.44262 1.96326 3.46006 2.03602C2.74576 2.08097 2.05985 2.20761 1.50051 2.41752C0.607492 2.75186 0.111247 3.24436 0.0173432 3.77766C-0.0570749 4.186 0.106051 4.61907 0.544394 4.97566C1.63339 5.85902 4.09271 6.11414 5.99622 5.70315C6.58303 5.57784 7.0802 5.37288 7.43744 5.11987C7.56568 5.02988 7.72732 4.92073 7.734 4.80522C7.734 4.7185 7.62599 4.65112 7.4573 4.62225C7.32925 4.59028 7.18747 4.59028 7.05923 4.59037H6.4251C6.26995 4.59054 6.10126 4.59054 5.95298 4.62251C5.76406 4.66446 5.64269 4.751 5.50109 4.82165C5.31217 4.91482 5.09633 4.99182 4.84673 5.04004C4.08844 5.1846 3.10894 5.09488 2.58579 4.79004C2.29814 4.62136 2.17621 4.42179 2.09493 4.21346L5.02748 4.21293L7.00355 4.21258C7.2398 4.21258 7.59723 4.24446 7.79562 4.17373C8.06545 4.08056 7.99771 3.84398 7.97748 3.70851C7.90325 3.27032 7.61245 2.85112 6.93081 2.5385ZM2.17213 3.59194C2.46182 2.91514 4.21148 2.58548 5.34798 3.03021C5.52354 3.09759 5.66514 3.18422 5.77315 3.27739C5.88765 3.37673 5.97525 3.47917 6.00253 3.59133L2.17194 3.59194H2.17213Z"/>
-            </svg>
-            <span className="text-primary font-medium">About Us</span>
+          <div className="inline-flex items-center gap-2 h-7 px-3 rounded-full bg-accent mb-4">
+            <span className="w-2 h-2 rounded-full bg-primary" />
+            <span className="text-primary text-sm font-medium">About Us</span>
           </div>
-          <h1 className="text-4xl lg:text-6xl font-medium text-black mb-6 leading-tight">
-            Making Laundry 
+          <h1 className="text-3xl md:text-4xl lg:text-[40px] font-medium text-black mb-3 leading-tight">
+            Making Laundry <span className="text-primary">eazyy</span>
           </h1>
-          <div className="flex items-center justify-center mb-8">
-            <img 
-              src="https://cdn.builder.io/api/v1/image/assets%2F0ba0452a2d1340e7b84136d8ed253a1b%2Fb6e642e462f04f14827396626baf4d5e?format=webp&width=800" 
-              alt="eazyy logo" 
-              className="h-16 w-auto"
-            />
-          </div>
-          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
-            Founded with the belief that everyone deserves more time for what matters most, we've revolutionized the laundry experience with convenient, reliable, and professional care.
+          <p className="text-black/70 text-[13px] md:text-[14px] leading-relaxed max-w-xl mx-auto">
+            We believe everyone deserves more time for what matters most. That's why we've reinvented laundry into a smooth, door-to-door experience—easy booking, on-time pickups and careful, professional care. Reliable service, real-time updates, and results you can trust.
           </p>
         </div>
       </section>
 
       {/* Story Section */}
-      <section className="px-4 lg:px-16 py-20 bg-gray-50">
+      <section className="px-4 lg:px-16 pt-16 pb-20 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <h2 className="text-4xl lg:text-5xl font-medium text-black mb-6 leading-tight">
+              <div className="inline-flex items-center gap-2 h-7 px-3 rounded-full bg-accent mb-4">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                <span className="text-primary text-sm font-medium">Story of eazyy</span>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-medium text-black mb-4 leading-tight">
                 Our Story
               </h2>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                It started with a simple frustration: spending weekends doing laundry instead of living life. Our founders realized that in a world where you can get almost anything delivered, quality laundry care should be just as convenient.
+              <p className="text-[13px] text-black/70 mb-4 leading-relaxed">
+                It began with a simple frustration: weekends lost to laundry. In a world where almost anything can be delivered, expert garment care should be just as effortless.
               </p>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                Since 2020, we've been dedicated to giving people their time back while providing the highest standard of garment care. What began as a local service has grown into a trusted partner for thousands of families and professionals.
+              <p className="text-[13px] text-black/70 mb-4 leading-relaxed">
+                Since 2020, we've focused on giving people their time back while upholding the highest standards of cleaning and finishing. What started as a local service has grown into a trusted partner for thousands of families and professionals.
               </p>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Today, we're proud to combine cutting-edge technology with time-tested craftsmanship, ensuring every item receives the care it deserves.
+              <p className="text-[13px] text-black/70 leading-relaxed">
+                Today, we combine smart technology with skilled craftsmanship to ensure every item is treated with care and returned on time—consistently and confidently, order after order.
               </p>
             </div>
             <div className="relative">
-              <div className="w-full h-96 lg:h-[500px] bg-primary rounded-3xl flex items-center justify-center">
-                <img 
-                  src="https://cdn.builder.io/api/v1/image/assets%2F0ba0452a2d1340e7b84136d8ed253a1b%2Fb6e642e462f04f14827396626baf4d5e?format=webp&width=800" 
-                  alt="eazyy logo" 
-                  className="h-24 w-auto filter brightness-0 invert"
+              <div className="w-full h-96 lg:h-[440px] rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(17,24,39,0.15)]">
+                <img
+                  src={aboutPhoto}
+                  alt="Eazyy delivery van"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </div>
@@ -96,152 +95,108 @@ export default function About() {
       {/* Values Section */}
       <section className="px-4 lg:px-16 py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-medium text-black mb-6">Our Values</h2>
-            <p className="text-xl text-gray-600">The principles that guide everything we do</p>
+          <div className="text-center mb-10">
+            <h2 className="text-4xl lg:text-5xl font-medium text-black mb-2">Our Values</h2>
+            <p className="text-black/60">The principles that guide everything we do</p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 6L9 17l-5-5" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium text-black mb-4">Quality First</h3>
-              <p className="text-gray-600">Every garment receives meticulous attention, using only the finest products and techniques.</p>
+              <h3 className="text-[15px] font-semibold text-black mb-1">Quality First</h3>
+              <p className="text-[12px] text-black/70 leading-relaxed">Every garment receives meticulous attention, using only the finest product and techniques</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v6l4 2" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium text-black mb-4">Reliability</h3>
-              <p className="text-gray-600">Consistent service you can count on, with transparent tracking and timely delivery.</p>
+              <h3 className="text-[15px] font-semibold text-black mb-1">Reliability</h3>
+              <p className="text-[12px] text-black/70 leading-relaxed">Consistent service you can count on, with transparent tracking and timely delivery</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2l-5 7h3l-4 6h6v5h2v-5h6l-4-6h3l-5-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium text-black mb-4">Sustainability</h3>
-              <p className="text-gray-600">Eco-friendly practices and products that care for your clothes and our planet.</p>
+              <h3 className="text-[15px] font-semibold text-black mb-1">Sustainability</h3>
+              <p className="text-[12px] text-black/70 leading-relaxed">Eco-friendly practices and product that care for your clothes and our planet</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4 8.04 4 9.54 4.81 10.5 6.09 11.46 4.81 12.96 4 14.5 4 17 4 19 6 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-medium text-black mb-4">Care</h3>
-              <p className="text-gray-600">We treat every item as if it were our own, with genuine care and respect.</p>
+              <h3 className="text-[15px] font-semibold text-black mb-1">Care</h3>
+              <p className="text-[12px] text-black/70 leading-relaxed">We treat every item as if it were our own, with genuine and respect</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="px-4 lg:px-16 py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-medium text-black mb-6">Meet Our Team</h2>
-            <p className="text-xl text-gray-600">The people behind the</p>
-            <div className="flex items-center justify-center mt-2">
-              <img 
-                src="https://cdn.builder.io/api/v1/image/assets%2F0ba0452a2d1340e7b84136d8ed253a1b%2Fb6e642e462f04f14827396626baf4d5e?format=webp&width=800" 
-                alt="eazyy logo" 
-                className="h-8 w-auto"
-              />
-              <span className="text-xl text-gray-600 ml-2">experience</span>
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">AJ</span>
-              </div>
-              <h3 className="text-xl font-medium text-black mb-2">Alex Johnson</h3>
-              <p className="text-primary font-medium mb-2">CEO & Co-Founder</p>
-              <p className="text-gray-600 text-sm">Former tech executive with a passion for simplifying everyday tasks.</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">SM</span>
-              </div>
-              <h3 className="text-xl font-medium text-black mb-2">Sarah Martinez</h3>
-              <p className="text-primary font-medium mb-2">Head of Operations</p>
-              <p className="text-gray-600 text-sm">20+ years in garment care, ensuring every item meets our high standards.</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">DL</span>
-              </div>
-              <h3 className="text-xl font-medium text-black mb-2">David Lee</h3>
-              <p className="text-primary font-medium mb-2">Chief Technology Officer</p>
-              <p className="text-gray-600 text-sm">Building the technology that makes laundry effortless and transparent.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* Stats Section */}
-      <section className="px-4 lg:px-16 py-20">
+      <section className="px-4 lg:px-16 pt-10 pb-20">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-medium text-black mb-6">By The Numbers</h2>
-            <p className="text-xl text-gray-600">Our impact in the community</p>
+                      <div className="text-center mb-4">
+            <h2 className="text-4xl lg:text-5xl font-medium text-black mb-2">By The Numbers</h2>
+            <p className="text-black/60">Our impact in our community</p>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-4 gap-12">
             <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-primary mb-2">50K+</div>
-              <p className="text-gray-600">Happy Customers</p>
+              <div className="text-4xl lg:text-5xl font-bold text-primary mb-1">50K+</div>
+              <p className="text-[12px] text-black/70">Happy Customers</p>
             </div>
             
             <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-primary mb-2">1M+</div>
-              <p className="text-gray-600">Items Cleaned</p>
+              <div className="text-4xl lg:text-5xl font-bold text-primary mb-1">500K+</div>
+              <p className="text-[12px] text-black/70">Items Cleaned</p>
             </div>
             
             <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-primary mb-2">500K+</div>
-              <p className="text-gray-600">Hours Saved</p>
+              <div className="text-4xl lg:text-5xl font-bold text-primary mb-1">100K+</div>
+              <p className="text-[12px] text-black/70">Hours Saved</p>
             </div>
             
             <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-primary mb-2">98%</div>
-              <p className="text-gray-600">Satisfaction Rate</p>
+              <div className="text-4xl lg:text-5xl font-bold text-primary mb-1">98%</div>
+              <p className="text-[12px] text-black/70">Satisfaction Rate</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="px-4 lg:px-16 py-20 bg-primary text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl lg:text-5xl font-medium mb-6">Join The</h2>
-          <div className="flex items-center justify-center mb-6">
-            <img 
-              src="https://cdn.builder.io/api/v1/image/assets%2F0ba0452a2d1340e7b84136d8ed253a1b%2Fb6e642e462f04f14827396626baf4d5e?format=webp&width=800" 
-              alt="eazyy logo" 
-              className="h-12 w-auto filter brightness-0 invert"
-            />
-            <span className="text-4xl lg:text-5xl font-medium ml-4">Revolution</span>
+      <section className="px-4 lg:px-16 py-10 lg:py-16">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="relative rounded-[28px] overflow-hidden shadow-[0_20px_60px_rgba(17,24,39,0.15)]">
+            <img src={aboutBanner} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="relative z-10 px-6 md:px-10 lg:px-16 py-12 md:py-16 text-white text-center">
+              <div className="inline-flex items-center gap-2 h-8 px-3 rounded-full bg-white/20 backdrop-blur-sm mb-4">
+                <span className="text-sm">Join us</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium mb-3">Join thousands who trust Eazyy</h2>
+              <p className="max-w-2xl mx-auto text-white/90 text-base md:text-lg mb-6">
+                Door-to-door laundry with flexible pickup, careful cleaning, and reliable drop-off.
+              </p>
+              <Link to="/order/start" className="inline-flex items-center justify-center bg-black/80 hover:bg-black text-white px-6 py-3 rounded-full font-medium transition">
+                Get started
+              </Link>
+            </div>
           </div>
-          <p className="text-xl mb-8 opacity-90">
-            Experience the convenience of professional laundry care, delivered to your door.
-          </p>
-          <button className="bg-white text-primary px-8 py-4 rounded-full font-medium text-lg hover:bg-gray-100 transition-colors">
-            Get Started Today
-          </button>
         </div>
       </section>
 
