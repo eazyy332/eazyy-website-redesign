@@ -48,12 +48,21 @@ export function createServer() {
       }
       
       const token = authHeader.substring(7);
-      const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
+      
+      // Use the anon client to verify the user token, then use admin client for data access
+      const { createClient } = await import("@supabase/supabase-js");
+      const supabaseAnon = createClient(
+        process.env.VITE_SUPABASE_URL as string,
+        process.env.VITE_SUPABASE_ANON_KEY as string
+      );
+      
+      const { data: { user }, error: userError } = await supabaseAnon.auth.getUser(token);
       
       if (userError || !user) {
         return res.status(401).json({ ok: false, error: "Invalid authentication" });
       }
 
+      // Use admin client to bypass RLS for this specific query
       const { data, error } = await supabaseAdmin
         .from("orders")
         .select(`

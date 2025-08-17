@@ -52,7 +52,8 @@ export function useOrders() {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        throw new Error("No active session");
+        setOrders([]);
+        return;
       }
 
       const response = await fetch('/api/orders', {
@@ -63,7 +64,8 @@ export function useOrders() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch orders: ${response.status} ${errorText}`);
       }
 
       const result = await response.json();
@@ -75,6 +77,7 @@ export function useOrders() {
 
       setOrders(data || []);
     } catch (err: any) {
+      console.error('Error fetching orders:', err);
       setError(err.message);
     } finally {
       setLoading(false);
