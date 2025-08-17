@@ -1,25 +1,27 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose, DrawerTrigger } from "@/components/ui/drawer";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
-// Service banner backgrounds and icons - using placeholder images
-const heroEazzy = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=400&fit=crop";
-const heroDry = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=1200&h=400&fit=crop";
-const heroWash = "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=1200&h=400&fit=crop";
-const heroRepair = "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop";
+// Asset paths served statically from public root; avoids Vite import failures if files are outside module graph
+const heroEazzy = "/images_devlopment/eazyy-bag-service-banner-background.png";
+const heroDry = "/images_devlopment/dry-clean-service-banner-background.png";
+const heroWash = "/images_devlopment/wash-and-iron-serivce-banner-background.png";
+const heroRepair = "/images_devlopment/repair-service-banner-background.png";
 
-// Item imagery used in the grid - using placeholder images
-const tshirtIcon = "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop";
-const poloIcon = "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=200&h=200&fit=crop";
-const henleyIcon = "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&h=200&fit=crop";
-const teeGraphicIcon = "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=200&h=200&fit=crop";
-const foldedBagIcon = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop";
-const altIcon = "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=200&h=200&fit=crop";
+// Item icons (served as static paths)
+const tshirtIcon = "/images_devlopment/32e5a8a6-1220-49e7-aa82-3734440a5043.png";
+const poloIcon = "/images_devlopment/d65570c9-c43d-49e8-a750-31de4ade14a5.png";
+const henleyIcon = "/images_devlopment/958ab653-5129-45c7-a1a9-0b216c2cac0c.png";
+const teeGraphicIcon = "/images_devlopment/f000823d-5a30-4ba8-8d76-30dde432ce90.png";
+const foldedBagIcon = "/images_devlopment/d5eb7a60-2415-444e-9926-a21b54dfbea1.png";
+const altIcon = "/images_devlopment/a9264dd0-4fa0-43eb-a418-143762649914.png";
 
-// Service selector icons - using placeholder images
-const iconBag = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=64&h=64&fit=crop";
-const iconWashIron = "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=64&h=64&fit=crop";
-const iconDry = "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=64&h=64&fit=crop";
-const iconRepair = "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=64&h=64&fit=crop";
+// Service selector icons (per your assets)
+const iconBag = "/images_devlopment/eazyy-bag-service-icon.png";
+const iconWashIron = "/images_devlopment/wash-andiron-service.png";
+const iconDry = "/images_devlopment/dry-clean-service-icon.png";
+const iconRepair = "/images_devlopment/repair-service-icon.png";
 
 interface Item {
   id: string;
@@ -113,8 +115,6 @@ export default function ItemSelection() {
   };
 
   const currentService = serviceData[category || ''];
-
-  // Per-service hero meta
   const serviceMeta: Record<string, { title: string; description: string; hero: string; accent: string; label: string } > = {
     'eazzy-bag': {
       title: 'eazyy Bag',
@@ -154,7 +154,7 @@ export default function ItemSelection() {
     }
   }, []);
 
-  // Reset subcategory when switching services so grids don't appear empty
+  // Reset subcategory when switching services to avoid empty grids
   useEffect(() => {
     setSelectedSubcategory('all');
   }, [category]);
@@ -253,7 +253,6 @@ export default function ItemSelection() {
     const key = (item.name || '').toLowerCase();
     if (key.includes('polo')) return poloIcon;
     if (key.includes('henley')) return henleyIcon;
-    if (key.includes('bag')) return foldedBagIcon;
     if (key.includes('t-shirt') || key.includes('tee') || key.includes('shirt')) return tshirtIcon;
     return teeGraphicIcon;
   };
@@ -297,6 +296,8 @@ export default function ItemSelection() {
               </div>
               <h1 className="mt-5 text-4xl md:text-5xl font-medium text-white">{meta.title}</h1>
               <p className="mt-3 max-w-2xl text-white/90 text-lg leading-relaxed">{meta.description}</p>
+
+              {/* Right-side circular service selectors */}
               <div className="hidden md:flex items-center gap-5 absolute bottom-6 right-8">
                 {[
                   { key: 'eazzy-bag', src: iconBag, alt: 'eazyy bag' },
@@ -403,6 +404,8 @@ export default function ItemSelection() {
           </div>
         </div>
       )}
+
+      {/* Drawer removed; dedicated cart page is used now */}
     </div>
   );
 }
