@@ -7,7 +7,7 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing Supabase environment variables. Please check your .env configuration.");
+  throw new Error("Missing Supabase environment variables. Please connect to Supabase first.");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -27,5 +27,3 @@ export async function getSession() {
   const { data } = await supabase.auth.getSession();
   return data.session;
 }
-
-
