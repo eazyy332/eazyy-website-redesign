@@ -9,25 +9,26 @@ export async function handleContact(req: Request, res: Response) {
       return res.status(400).json({ ok: false, error: "Missing required fields" });
     }
 
-    // Insert message into Supabase table `contact_messages`
+    // Insert contact message into Supabase
     const { error: dbError } = await supabaseAdmin
       .from("contact_messages")
       .insert({
         first_name: firstName,
         last_name: lastName,
         email,
-        phone,
+        phone: phone || null,
         subject,
         message,
-        created_at: new Date().toISOString(),
       });
 
     if (dbError) {
+      console.error("Database error:", dbError);
       return res.status(500).json({ ok: false, error: dbError.message });
     }
 
     return res.json({ ok: true });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Contact form error:", error);
     return res.status(500).json({ ok: false, error: "Unexpected error" });
   }
 }

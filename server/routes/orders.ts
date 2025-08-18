@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { supabaseAdmin } from "../lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
 // Helper to get user from Authorization header
 async function getUserFromRequest(req: Request) {
@@ -9,7 +10,17 @@ async function getUserFromRequest(req: Request) {
   }
   
   const token = authHeader.substring(7);
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  
+  // Use anon client to verify user token
+  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+  
+  const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
+  const { data: { user }, error } = await supabaseAnon.auth.getUser(token);
   
   if (error || !user) {
     return null;

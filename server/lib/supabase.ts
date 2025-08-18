@@ -5,25 +5,31 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 dotenv.config();
 
-const supabaseUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL) as
-  | string
-  | undefined;
-const supabaseServiceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_service_role_key_for_development') as string;
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-const supabaseAdmin = (() => {
+if (!supabaseUrl) {
+  throw new Error("VITE_SUPABASE_URL is required in environment variables");
+}
+
+export const supabaseAdmin = (() => {
   if (!supabaseUrl) {
-    throw new Error("SUPABASE_URL (or VITE_SUPABASE_URL) is required in env");
+    throw new Error("VITE_SUPABASE_URL is required in environment variables");
   }
-  if (!supabaseServiceKey || supabaseServiceKey === 'placeholder_service_role_key_for_development') {
-    console.warn("SUPABASE_SERVICE_ROLE_KEY not configured - using anon key for development");
-    // Fallback to anon key for development
-    const anonKey = process.env.VITE_SUPABASE_ANON_KEY as string;
-    return createClient(supabaseUrl, anonKey, {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
-  } else {
+  
+  if (supabaseServiceKey) {
+    // Use service role key for admin operations
     return createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
+  } else if (supabaseAnonKey) {
+    // Fallback to anon key for development
+    console.warn("SUPABASE_SERVICE_ROLE_KEY not configured - using anon key");
+    return createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  } else {
+    throw new Error("Either SUPABASE_SERVICE_ROLE_KEY or VITE_SUPABASE_ANON_KEY is required");
   }
 })();
